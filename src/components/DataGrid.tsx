@@ -200,15 +200,25 @@ export function DataGrid({ columns, rows, onChange, onAddColumn }: Props) {
                           }}
                         />
                       ) : c.type === "select" ? (
-                        <button
-                          type="button"
-                          onClick={() =>
-                            setEditing({ rowId: row.id, key: c.key })
+                        <select
+                          className={`w-full cursor-pointer appearance-none rounded-md px-2 py-0.5 text-center text-[11px] font-medium outline-none transition-colors ${
+                            value
+                              ? statusTone(value)
+                              : "bg-zinc-500/12 text-zinc-600"
+                          }`}
+                          value={value}
+                          onChange={(e) =>
+                            updateCell(row.id, c.key, e.target.value)
                           }
-                          className={`rounded-md px-2 py-0.5 text-[11px] font-medium ${value ? statusTone(value) : "bg-zinc-500/12 text-zinc-600"}`}
+                          aria-label={c.label}
                         >
-                          {value || "—"}
-                        </button>
+                          <option value="">—</option>
+                          {c.options?.map((o) => (
+                            <option key={o} value={o}>
+                              {o}
+                            </option>
+                          ))}
+                        </select>
                       ) : (
                         <button
                           type="button"
