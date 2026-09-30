@@ -1,9 +1,11 @@
-export type ColumnType = "text" | "number" | "date";
+export type ColumnType = "text" | "number" | "date" | "time" | "select";
 
 export interface Column {
   key: string;
   label: string;
   type: ColumnType;
+  /** Allowed values for "select" columns. */
+  options?: string[];
 }
 
 export interface Row {
@@ -14,47 +16,45 @@ export interface Row {
 export const uid = () =>
   `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 9)}`;
 
+export const TRAVEL_MODES = ["Flight", "Train", "Bus", "Car", "Cab"];
+
 export const DEFAULT_COLUMNS: Column[] = [
-  { key: "vendor", label: "Vendor", type: "text" },
-  { key: "region", label: "Region", type: "text" },
-  { key: "contact", label: "Contact", type: "text" },
-  { key: "spend", label: "Spend", type: "number" },
-  { key: "renewal", label: "Renewal", type: "date" },
-  { key: "status", label: "Status", type: "text" },
+  { key: "from", label: "From", type: "text" },
+  { key: "to", label: "To", type: "text" },
+  { key: "travel_mode", label: "Travel Mode", type: "select", options: TRAVEL_MODES },
+  { key: "departure_date", label: "Departure Date", type: "date" },
+  { key: "departure_time", label: "Departure Time", type: "time" },
 ];
 
 export const SAMPLE_ROWS: Row[] = [
   {
     id: uid(),
     values: {
-      vendor: "Northwind Foods",
-      region: "EMEA",
-      contact: "A. Whitfield",
-      spend: "84200",
-      renewal: "2026-03-14",
-      status: "Active",
+      from: "Delhi",
+      to: "Mumbai",
+      travel_mode: "Flight",
+      departure_date: "2026-10-12",
+      departure_time: "09:45",
     },
   },
   {
     id: uid(),
     values: {
-      vendor: "Meridian Textiles",
-      region: "APAC",
-      contact: "R. Tanaka",
-      spend: "12650",
-      renewal: "2025-11-02",
-      status: "Pending",
+      from: "Chennai",
+      to: "Bengaluru",
+      travel_mode: "Train",
+      departure_date: "2026-10-15",
+      departure_time: "14:20",
     },
   },
   {
     id: uid(),
     values: {
-      vendor: "Comet Analytics",
-      region: "AMER",
-      contact: "S. Rivera",
-      spend: "9040",
-      renewal: "2026-01-20",
-      status: "Draft",
+      from: "Pune",
+      to: "Goa",
+      travel_mode: "Bus",
+      departure_date: "2026-10-20",
+      departure_time: "21:30",
     },
   },
 ];
