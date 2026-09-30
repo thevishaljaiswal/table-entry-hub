@@ -32,7 +32,7 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const STORAGE_KEY = "ledgerworks-grid-v1";
+const STORAGE_KEY = "ledgerworks-grid-v2";
 
 function loadState(): { columns: Column[]; rows: Row[] } {
   try {

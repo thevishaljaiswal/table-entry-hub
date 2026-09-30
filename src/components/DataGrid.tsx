@@ -13,6 +13,8 @@ const TYPE_TAG: Record<Column["type"], string> = {
   text: "TEXT",
   number: "NUM",
   date: "DATE",
+  time: "TIME",
+  select: "SELECT",
 };
 
 export function DataGrid({ columns, rows, onChange, onAddColumn }: Props) {
@@ -145,7 +147,7 @@ export function DataGrid({ columns, rows, onChange, onAddColumn }: Props) {
                     <td
                       key={c.key}
                       className={`${cellClass} ${
-                        c.type === "number" || c.type === "date"
+                        c.type === "number" || c.type === "date" || c.type === "time"
                           ? "font-mono"
                           : ""
                       } ${isEditing ? "ring-2 ring-glacier/50" : ""}`}
@@ -153,7 +155,28 @@ export function DataGrid({ columns, rows, onChange, onAddColumn }: Props) {
                         setEditing({ rowId: row.id, key: c.key })
                       }
                     >
-                      {isEditing ? (
+                      {isEditing && c.type === "select" ? (
+                        <select
+                          autoFocus
+                          className="w-full cursor-pointer rounded-md border border-black/10 bg-white/70 px-1.5 py-1 text-sm text-ink outline-none"
+                          value={value}
+                          onChange={(e) =>
+                            updateCell(row.id, c.key, e.target.value)
+                          }
+                          onBlur={() => setEditing(null)}
+                          onKeyDown={(e) => {
+                            if (e.key === "Enter" || e.key === "Escape")
+                              setEditing(null);
+                          }}
+                        >
+                          <option value="">—</option>
+                          {c.options?.map((o) => (
+                            <option key={o} value={o}>
+                              {o}
+                            </option>
+                          ))}
+                        </select>
+                      ) : isEditing ? (
                         <input
                           autoFocus
                           type={
@@ -161,7 +184,9 @@ export function DataGrid({ columns, rows, onChange, onAddColumn }: Props) {
                               ? "number"
                               : c.type === "date"
                                 ? "date"
-                                : "text"
+                                : c.type === "time"
+                                  ? "time"
+                                  : "text"
                           }
                           className="w-full bg-transparent text-sm outline-none"
                           value={value}
@@ -174,15 +199,15 @@ export function DataGrid({ columns, rows, onChange, onAddColumn }: Props) {
                               setEditing(null);
                           }}
                         />
-                      ) : c.key === "status" && value ? (
+                      ) : c.type === "select" ? (
                         <button
                           type="button"
                           onClick={() =>
                             setEditing({ rowId: row.id, key: c.key })
                           }
-                          className={`rounded-md px-2 py-0.5 text-[11px] font-medium ${statusTone(value)}`}
+                          className={`rounded-md px-2 py-0.5 text-[11px] font-medium ${value ? statusTone(value) : "bg-zinc-500/12 text-zinc-600"}`}
                         >
-                          {value}
+                          {value || "—"}
                         </button>
                       ) : (
                         <button
