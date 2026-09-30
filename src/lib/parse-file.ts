@@ -53,12 +53,13 @@ async function parseExcel(file: File): Promise<ParsedFile> {
     raw: false,
   });
   const clean = data.filter((r) => r.some((c) => String(c).trim()));
-  if (clean.length === 0) throw new Error("The file is empty.");
+  const [head, ...rest] = clean;
+  if (!head) throw new Error("The file is empty.");
   return {
     name: file.name,
     size: file.size,
-    headers: clean[0].map((h, i) => String(h).trim() || `Column ${i + 1}`),
-    rows: clean.slice(1).map((r) => r.map((c) => String(c))),
+    headers: head.map((h, i) => String(h).trim() || `Column ${i + 1}`),
+    rows: rest.map((r) => r.map((c) => String(c))),
   };
 }
 
