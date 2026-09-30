@@ -39,6 +39,7 @@ export function DataGrid({ columns, rows, onChange, onAddColumn }: Props) {
   };
 
   const updateCell = (rowId: string, key: string, value: string) => {
+    console.log("[trace] updateCell", rowId, key, value);
     onChange(
       rows.map((r) =>
         r.id === rowId ? { ...r, values: { ...r.values, [key]: value } } : r,
