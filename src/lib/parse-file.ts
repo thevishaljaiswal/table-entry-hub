@@ -26,12 +26,13 @@ function parseCsv(file: File, delimiter?: string): Promise<ParsedFile> {
       skipEmptyLines: true,
       complete: (result) => {
         const data = result.data.filter((r) => r.some((c) => c?.trim()));
-        if (data.length === 0) return reject(new Error("The file is empty."));
+        const [head, ...rest] = data;
+        if (!head) return reject(new Error("The file is empty."));
         resolve({
           name: file.name,
           size: file.size,
-          headers: data[0].map((h, i) => h?.trim() || `Column ${i + 1}`),
-          rows: data.slice(1),
+          headers: head.map((h, i) => h?.trim() || `Column ${i + 1}`),
+          rows: rest,
         });
       },
       error: (err) => reject(new Error(`Could not parse file: ${err.message}`)),
@@ -42,7 +43,10 @@ function parseCsv(file: File, delimiter?: string): Promise<ParsedFile> {
 async function parseExcel(file: File): Promise<ParsedFile> {
   const buf = await file.arrayBuffer();
   const wb = XLSX.read(buf, { type: "array" });
-  const sheet = wb.Sheets[wb.SheetNames[0]];
+  const sheetName = wb.SheetNames[0];
+  if (!sheetName) throw new Error("The workbook has no sheets.");
+  const sheet = wb.Sheets[sheetName];
+  if (!sheet) throw new Error("Could not read the first sheet.");
   const data = XLSX.utils.sheet_to_json<string[]>(sheet, {
     header: 1,
     defval: "",
