@@ -116,6 +116,8 @@ export function DataGrid({ columns, rows, onChange, onAddColumn }: Props) {
             </tr>
           )}
           {rows.map((row, i) => {
+            if (typeof window !== "undefined")
+              console.log("[trace] render row", row.id.slice(-4), "editing:", JSON.stringify(editing));
             const isSelected = selected.has(row.id);
             return (
               <tr
