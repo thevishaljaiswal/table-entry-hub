@@ -39,7 +39,6 @@ export function DataGrid({ columns, rows, onChange, onAddColumn }: Props) {
   };
 
   const updateCell = (rowId: string, key: string, value: string) => {
-    console.log("[trace] updateCell", rowId, key, value);
     onChange(
       rows.map((r) =>
         r.id === rowId ? { ...r, values: { ...r.values, [key]: value } } : r,
@@ -116,8 +115,6 @@ export function DataGrid({ columns, rows, onChange, onAddColumn }: Props) {
             </tr>
           )}
           {rows.map((row, i) => {
-            if (typeof window !== "undefined")
-              console.log("[trace] render row", row.id.slice(-4), "editing:", JSON.stringify(editing));
             const isSelected = selected.has(row.id);
             return (
               <tr

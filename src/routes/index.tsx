@@ -57,7 +57,6 @@ function Index() {
   const { columns, rows } = state;
 
   useEffect(() => {
-    console.log("[trace] persist", state.rows.length);
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     } catch {
